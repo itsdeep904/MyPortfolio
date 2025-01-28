@@ -162,17 +162,24 @@
     </div>
      <script>
         document.getElementById('downloadPdf').addEventListener('click', () => {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-            const content = document.getElementById('resumeContent');
-            doc.html(content, {
-                callback: function (doc) {
-                    doc.save('Mandeep_Resume.pdf');
-                },
-                x: 10,
-                y: 10
-            });
-        });
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    const content = document.getElementById('resumeContent');
+
+    doc.html(content, {
+        callback: function (doc) {
+            doc.save('Resume.pdf');
+        },
+        x: 10,
+        y: 10,
+        html2canvas: {
+            useCORS: true, // Enables cross-origin rendering
+            removeContainer: true, // Prevents container memory leaks
+            ignoreElements: (el) => el.tagName === 'svg', // Ignores all SVGs
+        }
+    });
+});
+
     </script>
 </body>
 </html>

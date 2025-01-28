@@ -160,26 +160,36 @@
             </div>
         </div>
     </div>
-     <script>
-        document.getElementById('downloadPdf').addEventListener('click', () => {
+   <script>
+document.getElementById('downloadPdf').addEventListener('click', () => {
     const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
-    const content = document.getElementById('resumeContent');
 
-    doc.html(content, {
-        callback: function (doc) {
-            doc.save('Resume.pdf');
-        },
-        x: 10,
-        y: 10,
-        html2canvas: {
-            useCORS: true, // Enables cross-origin rendering
-            removeContainer: true, // Prevents container memory leaks
-            ignoreElements: (el) => el.tagName === 'svg', // Ignores all SVGs
-        }
+    const content = document.getElementById('resumeContent');
+    const doc = new jsPDF({
+        orientation: 'portrait', // 'portrait' or 'landscape'
+        unit: 'px',              // Use pixels for precise scaling
+        format: 'a4'             // A4 size
+    });
+
+    html2canvas(content, {
+        scale: 2, // Increases rendering quality
+        useCORS: true, // Handles cross-origin issues
+    }).then(canvas => {
+        const imgData = canvas.toDataURL('image/png');
+        const pageWidth = doc.internal.pageSize.getWidth();
+        const pageHeight = doc.internal.pageSize.getHeight();
+        const imgWidth = canvas.width;
+        const imgHeight = canvas.height;
+        const ratio = Math.min(pageWidth / imgWidth, pageHeight / imgHeight);
+
+        const finalWidth = imgWidth * ratio;
+        const finalHeight = imgHeight * ratio;
+
+        doc.addImage(imgData, 'PNG', 0, 0, finalWidth, finalHeight);
+        doc.save('Resume.pdf');
     });
 });
+</script>
 
-    </script>
 </body>
 </html>
